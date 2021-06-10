@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
     <!-- Required Material Web JavaScript library -->
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <script src="./static/script.js"></script>
     <!-- Instantiate single textfield component rendered in the document -->
     <script>
       mdc.textField.MDCTextField.attachTo(document.querySelector('.mdc-text-field'));
@@ -33,8 +34,8 @@
       <div class="form">
         <form method=post enctype=multipart/form-data>
           <label>
-            <i class="mdc-button mdc-button--raised">Selecionar arquivos...</i>
-            <input class="mdc-button mdc-button--raised" type="file" name=file id="file" multiple>
+            <i class="mdc-button mdc-button--raised" id="select_files">Selecionar arquivos...</i>
+            <input onchange="handleFiles(this.files)" class="mdc-button mdc-button--raised" type="file" name=file id="file" multiple>
           </label>
           <input  class="submit-button mdc-button mdc-button--raised" type=submit value=Upload>
         </form>
