@@ -36,12 +36,8 @@ def upload_file():
         for i in range(len(files)):
             file = files[i]
             if not allowed_file(file.filename):
-                return '''
-                    <!doctype html>
-                    <title>Upload new File</title>
-                    <h1>Arquivo Invalido</h1>
-                    </form>
-                ''' 
+                print('Hello world!', file=sys.stderr)
+                return render_template('index.html',error=True)
             filename = secure_filename(file.filename)
             file.save(os.path.join(upload_dir, filename))
 

@@ -41,9 +41,19 @@ body {
     min-height: 100vh;
 }
 
-.lol {
+.box {
     border: 2px solid #ffffff;
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0 0 2.5em #212121;
+}
+
+h2 {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Roboto';
+    background: #ff5722;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
