@@ -1,7 +1,8 @@
-from flask import Flask, render_template, flash, request, redirect, url_for
+from flask import Flask, render_template, flash, request, redirect, url_for,send_file
 import os
 from werkzeug.utils import secure_filename
 import sys
+import subprocess
 
 app = Flask(__name__)
 
@@ -26,15 +27,18 @@ def upload_file():
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
-        print(file, file=sys.stderr)
+        temp = file.save(os.path.join('./uploads', 'converted.wav'))
+        print(temp, file=sys.stderr)
+        subprocess.run(["audio_convertio", "uploads","wav","mp3"])
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
+        return send_file('./uploads/converted.mp3',mimetype='audio/mp3', as_attachment=True)
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
             return redirect(url_for('download_file', name=filename))
     return render_template('index.html')
 
