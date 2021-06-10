@@ -11,19 +11,35 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./assets/style.css">
+    <!-- Required styles for Material Web -->
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <!-- Required Material Web JavaScript library -->
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <!-- Instantiate single textfield component rendered in the document -->
+    <script>
+      mdc.textField.MDCTextField.attachTo(document.querySelector('.mdc-text-field'));
+    </script>
   </head>
   <body>
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-    <div class="div1">
-      <h1>AudioConvertio</h1>
+
+    <div class="center-screen">
+      <div class="lol">
+      <div class="title">
+        <h1>AUDIO CONVERT.IO</h1>
+      </div>
+      <div class="form">
+        <form method=post enctype=multipart/form-data>
+          <label>
+            <i class="mdc-button mdc-button--raised">Selecionar arquivos...</i>
+            <input  class="mdc-button mdc-button--raised" type=file name=file id="file">
+          </label>
+          <input  class="submit-button mdc-button mdc-button--raised" type=submit value=Upload>
+        </form>
+      </div>
+    </div> 
     </div>
-    <div class="form">
-      <form method=post enctype=multipart/form-data>
-        <input type=file name=file>
-        <input type=submit value=Upload>
-      </form>
-    <script src="" async defer></script>
   </body>
 </html>
