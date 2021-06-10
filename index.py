@@ -3,16 +3,15 @@ import os
 from werkzeug.utils import secure_filename
 import sys
 import subprocess
+from zipfile import ZipFile,ZIP_LZMA
+import shutil
+import uuid
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = '/path/to/the/uploads'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'wav'}
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -20,26 +19,43 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
-    print('Hello world!', file=sys.stderr)
+    print(uuid.uuid1(), file=sys.stderr)
+    #print('Hello world!', file=sys.stderr)
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
-        file = request.files['file']
-        temp = file.save(os.path.join('./uploads', 'converted.wav'))
-        print(temp, file=sys.stderr)
-        subprocess.run(["audio_convertio", "uploads","wav","mp3"])
+        #print(temp, file=sys.stderr)
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
-        return send_file('./uploads/converted.mp3',mimetype='audio/mp3', as_attachment=True)
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
+        upload_dir =f"./uploads/{uuid.uuid1()}" 
+        os.makedirs(upload_dir)
+        files = request.files.getlist('file')
+        
+        for i in range(len(files)):
+            file = files[i]
+            if not allowed_file(file.filename):
+                return '''
+                    <!doctype html>
+                    <title>Upload new File</title>
+                    <h1>Arquivo Invalido</h1>
+                    </form>
+                ''' 
             filename = secure_filename(file.filename)
-            
-            return redirect(url_for('download_file', name=filename))
+            file.save(os.path.join(upload_dir, filename))
+
+        subprocess.run(["audio_convertio", upload_dir,"wav","mp3"])
+        zipObj = ZipFile(f"{upload_dir}/converted.zip", 'w',ZIP_LZMA)
+        for i in range(len(files)):
+            file = files[i]
+            filename = f"{upload_dir}/{secure_filename(file.filename).split('.')[0]}.mp3"
+            zipObj.write(filename)
+            os.remove(f"{upload_dir}/{secure_filename(file.filename)}") 
+            os.remove(f"{upload_dir}/{secure_filename(file.filename).split('.')[0]}.mp3") 
+        # close the Zip File
+        zipObj.close()
+        return send_file(f'{upload_dir}/converted.zip',mimetype='application/x-zip', as_attachment=True)
     return render_template('index.html')
 
 
